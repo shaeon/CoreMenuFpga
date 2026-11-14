@@ -1,0 +1,191 @@
+# ============================================================================
+# Menu core para la SiDi128 (Cyclone 10 LP 10CL120YF484C8G)
+#
+# El top (../rtl/menu_top.sv) es comun con MiST, SiDi y Poseidon. SiDi128:
+# VGA de 8 bits y HDMI estandar 1080p60 (rtl/hdmi_1080p.sv) por el IT6613,
+# audio I2S + HDMI + sigma-delta, fondo File en BRAM (sin SDRAM).
+# Pines y ajustes del port MSX_MiST_OSD para SiDi128. Compilar con Quartus 17.0.
+# ============================================================================
+
+set_global_assignment -name FAMILY "Cyclone 10 LP"
+set_global_assignment -name DEVICE 10CL120YF484C8G
+set_global_assignment -name TOP_LEVEL_ENTITY menu_top
+set_global_assignment -name DEVICE_FILTER_PIN_COUNT 484
+set_global_assignment -name DEVICE_FILTER_SPEED_GRADE 8
+set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
+set_global_assignment -name LAST_QUARTUS_VERSION "17.0.2 Lite Edition"
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name GENERATE_RBF_FILE ON
+
+# Configuracion (como el port MSX para SiDi128)
+set_global_assignment -name ENABLE_CONFIGURATION_PINS OFF
+set_global_assignment -name ENABLE_NCE_PIN OFF
+set_global_assignment -name ENABLE_BOOT_SEL_PIN OFF
+set_global_assignment -name CYCLONEIII_CONFIGURATION_SCHEME "PASSIVE SERIAL"
+set_global_assignment -name CRC_ERROR_OPEN_DRAIN OFF
+set_global_assignment -name FORCE_CONFIGURATION_VCCIO ON
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
+set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_global_assignment -name RESERVE_DATA0_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_global_assignment -name RESERVE_DATA1_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_global_assignment -name RESERVE_FLASH_NCE_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_global_assignment -name RESERVE_DCLK_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_global_assignment -name USE_CONFIGURATION_DEVICE OFF
+# las SDRAM no se usan: sus pines quedan como entradas con pull-up (nCS = 1)
+set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS INPUT TRI-STATED WITH WEAK PULL-UP"
+
+# Sintesis y ajuste
+set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
+set_global_assignment -name SMART_RECOMPILE ON
+set_global_assignment -name CYCLONEII_OPTIMIZATION_TECHNIQUE BALANCED
+set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS ON
+set_global_assignment -name OPTIMIZE_HOLD_TIMING "ALL PATHS"
+set_global_assignment -name OPTIMIZE_MULTI_CORNER_TIMING ON
+set_global_assignment -name FITTER_EFFORT "STANDARD FIT"
+set_global_assignment -name AUTO_MERGE_PLLS OFF
+
+# Opciones del core para esta placa
+set_global_assignment -name VERILOG_MACRO "SIDI128=1"
+set_global_assignment -name VERILOG_MACRO "USE_HDMI=1"
+set_global_assignment -name VERILOG_MACRO "I2S_AUDIO=1"
+set_global_assignment -name VERILOG_MACRO "VGA_8BIT=1"
+set_global_assignment -name VERILOG_MACRO "USE_AUDIO_IN=1"
+set_global_assignment -name VERILOG_MACRO "NO_DIRECT_UPLOAD=1"
+set_global_assignment -name VERILOG_MACRO "BIG_OSD=1"
+
+# Ficheros comunes (../files.qip) y los de esta placa
+set_global_assignment -name QIP_FILE ../files.qip
+set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/menu_top.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/bmp_bram.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/hdmi_1080p.sv
+set_global_assignment -name QIP_FILE pll.qip
+set_global_assignment -name SYSTEMVERILOG_FILE board_logo.sv
+set_global_assignment -name SDC_FILE menu_sidi128.sdc
+set_global_assignment -name PRE_FLOW_SCRIPT_FILE "quartus_sh:build_id.tcl"
+
+# ----------------------------------------------------------------------------
+# Pines de la SiDi128
+# ----------------------------------------------------------------------------
+set_location_assignment PIN_AB9 -to LED
+set_location_assignment PIN_G21 -to CLOCK_27
+set_location_assignment PIN_G22 -to CLOCK_50
+set_location_assignment PIN_R1 -to VGA_R[7]
+set_location_assignment PIN_R2 -to VGA_R[6]
+set_location_assignment PIN_R3 -to VGA_R[5]
+set_location_assignment PIN_P1 -to VGA_R[4]
+set_location_assignment PIN_P2 -to VGA_R[3]
+set_location_assignment PIN_N1 -to VGA_R[2]
+set_location_assignment PIN_N2 -to VGA_R[1]
+set_location_assignment PIN_M1 -to VGA_R[0]
+set_location_assignment PIN_W2 -to VGA_B[7]
+set_location_assignment PIN_V3 -to VGA_B[6]
+set_location_assignment PIN_W1 -to VGA_B[5]
+set_location_assignment PIN_V2 -to VGA_B[4]
+set_location_assignment PIN_V1 -to VGA_B[3]
+set_location_assignment PIN_U2 -to VGA_B[2]
+set_location_assignment PIN_U1 -to VGA_B[1]
+set_location_assignment PIN_T3 -to VGA_B[0]
+set_location_assignment PIN_AB4 -to VGA_G[7]
+set_location_assignment PIN_AB3 -to VGA_G[6]
+set_location_assignment PIN_Y6 -to VGA_G[5]
+set_location_assignment PIN_AA4 -to VGA_G[4]
+set_location_assignment PIN_Y4 -to VGA_G[3]
+set_location_assignment PIN_Y3 -to VGA_G[2]
+set_location_assignment PIN_Y2 -to VGA_G[1]
+set_location_assignment PIN_Y1 -to VGA_G[0]
+set_location_assignment PIN_J2 -to VGA_VS
+set_location_assignment PIN_J1 -to VGA_HS
+set_location_assignment PIN_A16 -to AUDIO_L
+set_location_assignment PIN_A17 -to AUDIO_R
+set_location_assignment PIN_A4 -to HDMI_R[7]
+set_location_assignment PIN_A3 -to HDMI_R[6]
+set_location_assignment PIN_B4 -to HDMI_R[5]
+set_location_assignment PIN_B3 -to HDMI_R[4]
+set_location_assignment PIN_B2 -to HDMI_R[3]
+set_location_assignment PIN_B1 -to HDMI_R[2]
+set_location_assignment PIN_C4 -to HDMI_R[1]
+set_location_assignment PIN_C3 -to HDMI_R[0]
+set_location_assignment PIN_H3 -to HDMI_B[7]
+set_location_assignment PIN_H2 -to HDMI_B[6]
+set_location_assignment PIN_H1 -to HDMI_B[5]
+set_location_assignment PIN_G3 -to HDMI_B[4]
+set_location_assignment PIN_F2 -to HDMI_B[3]
+set_location_assignment PIN_F1 -to HDMI_B[2]
+set_location_assignment PIN_E1 -to HDMI_B[1]
+set_location_assignment PIN_E2 -to HDMI_B[0]
+set_location_assignment PIN_D2 -to HDMI_G[7]
+set_location_assignment PIN_D1 -to HDMI_G[6]
+set_location_assignment PIN_E6 -to HDMI_G[5]
+set_location_assignment PIN_E4 -to HDMI_G[4]
+set_location_assignment PIN_E3 -to HDMI_G[3]
+set_location_assignment PIN_J4 -to HDMI_G[2]
+set_location_assignment PIN_J6 -to HDMI_G[1]
+set_location_assignment PIN_H4 -to HDMI_G[0]
+set_location_assignment PIN_B6 -to HDMI_VS
+set_location_assignment PIN_A6 -to HDMI_HS
+set_location_assignment PIN_A5 -to HDMI_DE
+set_location_assignment PIN_E5 -to HDMI_PCLK
+set_location_assignment PIN_B9 -to HDMI_SDA
+set_location_assignment PIN_B10 -to HDMI_SCL
+set_location_assignment PIN_A10 -to HDMI_RST
+set_location_assignment PIN_A9 -to HDMI_MCLK
+set_location_assignment PIN_B7 -to HDMI_BCK
+set_location_assignment PIN_A7 -to HDMI_LRCK
+set_location_assignment PIN_C6 -to HDMI_SDATA
+set_location_assignment PIN_AA7 -to SPI_DO
+set_location_assignment PIN_AB6 -to SPI_DI
+set_location_assignment PIN_T1 -to SPI_SCK
+set_location_assignment PIN_AB7 -to SPI_SS2
+set_location_assignment PIN_AA13 -to SPI_SS3
+set_location_assignment PIN_K1 -to CONF_DATA0
+set_location_assignment PIN_A15 -to I2S_LRCK
+set_location_assignment PIN_A14 -to I2S_BCK
+set_location_assignment PIN_A13 -to I2S_DATA
+set_location_assignment PIN_W19 -to AUDIO_IN
+
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_R[*]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_G[*]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_B[*]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_HS
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_VS
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_DE
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to I2S_BCK
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to I2S_LRCK
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to I2S_DATA
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_BCK
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_LRCK
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_SDATA
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to VGA_R[*]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to VGA_G[*]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to VGA_B[*]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to VGA_HS
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to VGA_VS
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to AUDIO_L
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to AUDIO_R
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to SPI_DO
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to LED
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to I2S_BCK
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to I2S_LRCK
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to I2S_DATA
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to HDMI_R[*]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to HDMI_G[*]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to HDMI_B[*]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to HDMI_PCLK
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to HDMI_DE
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to HDMI_HS
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to HDMI_VS
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to HDMI_SDA
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to HDMI_SCL
+set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to HDMI_RST
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to HDMI_BCK
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to HDMI_LRCK
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to HDMI_SDATA
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to HDMI_MCLK
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_R[*]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_G[*]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_B[*]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_HS
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_VS
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to HDMI_DE

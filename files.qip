@@ -1,0 +1,14 @@
+# Ficheros comunes a Calypso, MiST y SiDi. Las rutas van con qip_path para que
+# valgan desde los proyectos de calypso/, mist/ y sidi/. El top, el controlador
+# de SDRAM, el PLL, el .sdc, el logo (board_logo.sv) y los pines van en el
+# .qsf de cada placa.
+set_global_assignment -name QIP_FILE [file join $::quartus(qip_path) common/mist-modules/mist.qip]
+
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) rtl/cos.sv]
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) rtl/lfsr.v]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) rtl/lcd_clock.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) rtl/waterfall_bg.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) rtl/matrix_bg.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) rtl/sea_bg.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) rtl/menu_render.sv]
+set_global_assignment -name QIP_FILE [file join $::quartus(qip_path) rtl/kitt.qip]
